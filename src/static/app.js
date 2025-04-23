@@ -20,12 +20,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+        const participantsList = details.participants.length > 0
+          ? `<ul>${details.participants.map(participant => `<li>${participant}</li>`).join("")}</ul>`
+          : "<p>No participants yet</p>";
+
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-          <p><strong>Participants:</strong> ${details.participants.length > 0 ? details.participants.join(", ") : "No participants yet"}</p>
+          <button class="toggle-participants">Show Participants</button>
+          <div class="participants-info hidden">
+            <p><strong>Participants:</strong></p>
+            ${participantsList}
+          </div>
         `;
 
         activitiesList.appendChild(activityCard);
@@ -35,6 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
         option.value = name;
         option.textContent = name;
         activitySelect.appendChild(option);
+
+        // Add event listener to toggle participant info
+        const toggleButton = activityCard.querySelector(".toggle-participants");
+        const participantsInfo = activityCard.querySelector(".participants-info");
+        toggleButton.addEventListener("click", () => {
+          participantsInfo.classList.toggle("hidden");
+          toggleButton.textContent = participantsInfo.classList.contains("hidden") ? "Show Participants" : "Hide Participants";
+        });
       });
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
